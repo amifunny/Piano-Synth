@@ -39,7 +39,8 @@ body{
 
 .ivory-key{
 	background-color: var(--ivory-bg);
-	color: black;
+	color: #f3b645;
+    font-weight: bold;
 	height: var(--keyboard-h);
 	width: 100%;
 	box-shadow: 1px 1px 1px 1px white;
@@ -73,7 +74,7 @@ body{
     z-index: 2;
 
 	background-color: var(--ebony-bg);
-	color: white;
+	color: #ffcb6a;
 	height: 60%;
 	width: var(--ebony-w);
 
@@ -168,6 +169,16 @@ body{
     font-size: 14px
 }
 
+input[type="number"] {
+  -webkit-appearance: textfield;
+     -moz-appearance: textfield;
+          appearance: textfield;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none;
+}
+
 
 /*---Animated Bubbles---*/
 
@@ -228,35 +239,34 @@ body{
 }
 
 
-/* Spinner Taken from loading.io 
-
-.lds-facebook {
+/* Spinner Taken from loading.io */
+.spinner {
   display: inline-block;
   position: relative;
   width: 80px;
   height: 80px;
 }
-.lds-facebook div {
+.spinner div {
   display: inline-block;
   position: absolute;
   left: 8px;
   width: 16px;
-  background: #fff;
-  animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+  background: #ffcb6a;
+  animation: spinner 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
 }
-.lds-facebook div:nth-child(1) {
+.spinner div:nth-child(1) {
   left: 8px;
   animation-delay: -0.24s;
 }
-.lds-facebook div:nth-child(2) {
+.spinner div:nth-child(2) {
   left: 32px;
   animation-delay: -0.12s;
 }
-.lds-facebook div:nth-child(3) {
+.spinner div:nth-child(3) {
   left: 56px;
   animation-delay: 0;
 }
-@keyframes lds-facebook {
+@keyframes spinner {
   0% {
     top: 8px;
     height: 64px;
