@@ -1,43 +1,41 @@
 //create a synth and connect it to the master output (your speakers)
-const synth = new Tone.PolySynth().toMaster()
-
-// var MidiWriter = require(['./midi-writer-js']);
-
-// Start with a new track
-// var track = new MidiWriter.Track();
-
-// Define an instrument (optional):
-// track.addEvent(new MidiWriter.ProgramChangeEvent({instrument: 1}));
-
-// Add some notes:
-// var note = new MidiWriter.NoteEvent({pitch: ['C4', 'D4', 'E4'], duration: '4'});
-// track.addEvent(note);
+const synth = new Tone.Synth().toMaster()
 
 class Ivory extends React.Component{
 
 	constructor(props){
 		super(props)
+	    this.myRef = React.createRef();
+
 		this.handleStroke = this.handleStroke.bind(this);
 	}
 
 	handleStroke(e){
-		
-		console.log( this.props.key_label );
-		synth.triggerAttackRelease( ["G4","C4","F4","A4"] , '8n');
-		// var note = new MidiWriter.NoteEvent({pitch: [this.props.key_label], duration: '4'});
-		// track.addEvent(note);
+		synth.triggerAttackRelease( this.props.key_label , '8n');
+		// const node = this.myRef.current;
+		let bub = document.createElement("div");
+		bub.classList.add("bubble");
+		bub.classList.add("x1");
+		this.myRef.current.appendChild(bub);
+		 
 	}
 
 	render(){
+
+
 		return (
-		
-			<div className="key-set-relative">
-				<div id={this.props.key_label}  
-				onClick={this.handleStroke} className="ivory-key">
-					<div className="key-label">{this.props.key_label}</div>
+
+				<div ref={this.myRef} className="key-set-relative">
+
+				    {/* <div class="bubble x1"></div> */}
+					<div id={this.props.key_label}  
+					onClick={this.handleStroke} className="ivory-key">
+						<div className="key-label">{this.props.key_label}</div>
+					</div>
+					{ this.props.ebony_key && <Ebony key_label={this.props.ebony_key} /> }
+
 				</div>
-				{ this.props.ebony_key && <Ebony key_label={this.props.ebony_key} /> }
-			</div>
+
 		)
 	}
 
@@ -52,12 +50,8 @@ class Ebony extends React.Component{
 
 	handleStroke(e){
 		e.stopPropagation();
-		console.log( this.props.key_label);
 		synth.triggerAttackRelease( this.props.key_label , '8n');
 				
-		// Generate a data URI
-		// var write = new MidiWriter.Writer(track);
-		// console.log(write.dataUri());
 	}
 
 	render(){

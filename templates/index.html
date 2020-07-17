@@ -8,12 +8,16 @@
     <script src="https://unpkg.com/react-dom@16.7.0/umd/react-dom.development.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tone/13.8.25/Tone.js"></script>
     
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" 
+    rel="stylesheet">
+
     <link rel="stylesheet" type="text/css" href="/static/css/carpe_diem.css">
     <link rel="stylesheet" type="text/css" href="/static/style.css">
 
   </head>
   <body>
 
+    
     <div id="root">
       
     </div>
@@ -52,13 +56,19 @@
   
       // });
 
+      var record_obj = []
+      var is_recording = false
 
+      var key_pressed = {}
       document.addEventListener('keydown',function(e) {
           
+          // console.log(e)
+
           if( e.code in keymap && e.repeat!=true ){
 
             let keyid = keymap[e.code];
-            console.log(keyid);
+            key_pressed[keyid] = 1
+
             let key_div = document.getElementById(keyid);
 
             if( !key_div.classList.contains('piano-key-active') ){
@@ -71,10 +81,25 @@
 
       });
 
+
+      var key_sequence = {}
       document.addEventListener('keyup',function(e){
          
         if( e.code in keymap){
           let keyid = keymap[e.code];
+
+          key_sequence[keyid] = 1
+          delete key_pressed[keyid]
+
+          if( Object.keys(key_pressed).length === 0 ){
+            all_seq = Object.keys(key_sequence)
+            key_sequence = {}
+            console.log(all_seq)
+            if( is_recording ){
+              record_obj.push(all_seq)
+            }
+          }
+
           let key_div = document.getElementById(keyid);
           if( key_div.classList.contains('piano-key-active') ){
               key_div.classList.remove('piano-key-active');

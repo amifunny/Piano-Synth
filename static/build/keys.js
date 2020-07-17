@@ -7,19 +7,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 //create a synth and connect it to the master output (your speakers)
-var synth = new Tone.PolySynth().toMaster();
-
-// var MidiWriter = require(['./midi-writer-js']);
-
-// Start with a new track
-// var track = new MidiWriter.Track();
-
-// Define an instrument (optional):
-// track.addEvent(new MidiWriter.ProgramChangeEvent({instrument: 1}));
-
-// Add some notes:
-// var note = new MidiWriter.NoteEvent({pitch: ['C4', 'D4', 'E4'], duration: '4'});
-// track.addEvent(note);
+var synth = new Tone.Synth().toMaster();
 
 var Ivory = function (_React$Component) {
 	_inherits(Ivory, _React$Component);
@@ -29,6 +17,8 @@ var Ivory = function (_React$Component) {
 
 		var _this = _possibleConstructorReturn(this, (Ivory.__proto__ || Object.getPrototypeOf(Ivory)).call(this, props));
 
+		_this.myRef = React.createRef();
+
 		_this.handleStroke = _this.handleStroke.bind(_this);
 		return _this;
 	}
@@ -36,18 +26,20 @@ var Ivory = function (_React$Component) {
 	_createClass(Ivory, [{
 		key: "handleStroke",
 		value: function handleStroke(e) {
-
-			console.log(this.props.key_label);
-			synth.triggerAttackRelease(["G4", "C4", "F4", "A4"], '8n');
-			// var note = new MidiWriter.NoteEvent({pitch: [this.props.key_label], duration: '4'});
-			// track.addEvent(note);
+			synth.triggerAttackRelease(this.props.key_label, '8n');
+			// const node = this.myRef.current;
+			var bub = document.createElement("div");
+			bub.classList.add("bubble");
+			bub.classList.add("x1");
+			this.myRef.current.appendChild(bub);
 		}
 	}, {
 		key: "render",
 		value: function render() {
+
 			return React.createElement(
 				"div",
-				{ className: "key-set-relative" },
+				{ ref: this.myRef, className: "key-set-relative" },
 				React.createElement(
 					"div",
 					{ id: this.props.key_label,
@@ -82,12 +74,7 @@ var Ebony = function (_React$Component2) {
 		key: "handleStroke",
 		value: function handleStroke(e) {
 			e.stopPropagation();
-			console.log(this.props.key_label);
 			synth.triggerAttackRelease(this.props.key_label, '8n');
-
-			// Generate a data URI
-			// var write = new MidiWriter.Writer(track);
-			// console.log(write.dataUri());
 		}
 	}, {
 		key: "render",

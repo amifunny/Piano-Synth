@@ -16,11 +16,11 @@ var Dashboard = function (_React$Component) {
 	}
 
 	_createClass(Dashboard, [{
-		key: "render",
+		key: 'render',
 		value: function render() {
 			return React.createElement(
-				"div",
-				{ className: "dashboard" },
+				'div',
+				{ className: 'dashboard' },
 				React.createElement(UtilButtons, null)
 			);
 		}
@@ -38,26 +38,157 @@ var UtilButtons = function (_React$Component2) {
 		var _this2 = _possibleConstructorReturn(this, (UtilButtons.__proto__ || Object.getPrototypeOf(UtilButtons)).call(this, props));
 
 		_this2.state = {
-			is_recording: false
+			is_recording: false,
+			sending: false
 		};
+		_this2.startRecording = _this2.startRecording.bind(_this2);
+		_this2.stopRecording = _this2.stopRecording.bind(_this2);
+		_this2.generate = _this2.generate.bind(_this2);
+		_this2.sendRecording = _this2.sendRecording.bind(_this2);
 		return _this2;
 	}
 
 	_createClass(UtilButtons, [{
-		key: "render",
+		key: 'startRecording',
+		value: function startRecording() {
+			if (!this.state.sending) {
+				this.setState({
+					is_recording: true
+				});
+			}
+			is_recording = true;
+		}
+	}, {
+		key: 'stopRecording',
+		value: function stopRecording() {
+			this.setState({
+				is_recording: false
+			});
+			is_recording = true;
+		}
+	}, {
+		key: 'generate',
+		value: function generate() {
+			this.setState({
+				sending: true
+			});
+			this.sendRecording();
+		}
+	}, {
+		key: 'sendRecording',
+		value: function sendRecording() {
+			var _this3 = this;
+
+			console.log(record_obj);
+
+			fetch('http://127.0.0.1:5000/generate', {
+				method: 'POST',
+				mode: 'cors',
+				cache: 'no-cache',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					recording: record_obj
+				})
+			}).then(function (resp) {
+
+				_this3.setState({
+					sending: false
+				});
+			}, function (error) {
+
+				_this3.setState({
+					sending: false
+				});
+			});
+		}
+	}, {
+		key: 'render',
 		value: function render() {
 			return React.createElement(
-				"div",
-				{ className: "cd-h-div buttons-util" },
-				React.createElement(
-					"button",
-					{ className: "cd-btn-darken " },
-					"Record"
+				'div',
+				{ className: 'cd-h-div buttons-util flex-center' },
+				this.state.is_recording ? React.createElement(
+					'button',
+					{ onClick: this.stopRecording,
+						className: 'cd-btn-darken dash-btn' },
+					React.createElement(
+						'div',
+						{ className: 'btn-inner-div' },
+						React.createElement(
+							'span',
+							{ className: 'material-icons' },
+							'stop'
+						),
+						React.createElement(
+							'span',
+							null,
+							'Stop'
+						)
+					)
+				) : React.createElement(
+					'button',
+					{ onClick: this.startRecording,
+						className: 'cd-btn-darken dash-btn' },
+					React.createElement(
+						'div',
+						{ className: 'btn-inner-div' },
+						React.createElement(
+							'span',
+							{ className: 'material-icons' },
+							'album'
+						),
+						React.createElement(
+							'span',
+							{ className: 'btn-label' },
+							'Record'
+						)
+					)
 				),
 				React.createElement(
-					"button",
-					{ className: "cd-btn-darken" },
-					"Generate"
+					'button',
+					{ onClick: this.generate,
+						className: 'cd-btn-darken dash-btn' },
+					React.createElement(
+						'div',
+						{ className: 'btn-inner-div' },
+						React.createElement(
+							'span',
+							{ className: 'material-icons' },
+							'audiotrack'
+						),
+						React.createElement(
+							'span',
+							null,
+							'Generate'
+						)
+					)
+				),
+				React.createElement(
+					'div',
+					{ className: 'flex-center time-steps-div' },
+					React.createElement(
+						'div',
+						{ className: 'time-steps-label flex-center' },
+						React.createElement(
+							'span',
+							{ className: 'material-icons' },
+							'graphic_eq'
+						),
+						React.createElement(
+							'span',
+							null,
+							'Time Steps'
+						)
+					),
+					React.createElement(
+						'div',
+						null,
+						React.createElement('input', { value: '140', className: 'time-steps-input',
+							type: 'number' })
+					)
 				)
 			);
 		}
