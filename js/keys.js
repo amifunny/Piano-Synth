@@ -5,19 +5,33 @@ class Ivory extends React.Component{
 
 	constructor(props){
 		super(props)
-	    this.myRef = React.createRef();
 
+	    this.keyparent = React.createRef();	
 		this.handleStroke = this.handleStroke.bind(this);
+		this.removeBubbleTimeout = this.removeBubbleTimeout.bind(this);
+		this.bubbleCount = 0
 	}
 
 	handleStroke(e){
+
 		synth.triggerAttackRelease( this.props.key_label , '8n');
-		// const node = this.myRef.current;
-		let bub = document.createElement("div");
-		bub.classList.add("bubble");
-		bub.classList.add("x1");
-		this.myRef.current.appendChild(bub);
-		 
+
+		if(this.bubbleCount<3){
+			let bub = document.createElement("div");
+			bub.classList.add("bubble");
+			bub.classList.add("x1");
+			this.keyparent.current.appendChild(bub);
+			this.bubbleCount += 1
+			setTimeout( this.removeBubbleTimeout , 5000 )
+		}
+		
+	}
+
+	removeBubbleTimeout(){
+		if(this.bubbleCount!=0){
+			this.keyparent.current.removeChild( this.keyparent.current.childNodes[0] )
+			this.bubbleCount -= 1
+		}
 	}
 
 	render(){
@@ -25,9 +39,11 @@ class Ivory extends React.Component{
 
 		return (
 
-				<div ref={this.myRef} className="key-set-relative">
+				<div className="key-set-relative">
 
-				    {/* <div class="bubble x1"></div> */}
+					<div ref={this.keyparent} >
+					</div>
+
 					<div id={this.props.key_label}  
 					onClick={this.handleStroke} className="ivory-key">
 						<div className="key-label">{this.props.key_label}</div>

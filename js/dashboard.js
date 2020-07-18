@@ -1,3 +1,7 @@
+function play_piano(notes){
+	return
+}
+
 class Dashboard extends React.Component{
 
 	constructor(props){
@@ -120,7 +124,12 @@ class GenerateButton extends React.Component{
 				recording : record_obj,
 				time_steps : this.state.time_steps
 			})
-		}).then( resp => {
+		}).then(
+	        (result) => result.json()
+        ).then( resp => {
+
+				play_piano( resp['pred_notes'] )
+				this.download_address = resp['filename']
 
 				this.setState({
 					sending:false,
@@ -197,7 +206,7 @@ class GenStateComponent extends React.Component{
 		return(
 			<div>
 				{ this.props.sending && (
-						<div class="spinner">
+						<div className="spinner">
 							<div></div><div></div><div></div>
 						</div>
 				)}
@@ -216,16 +225,18 @@ class GenStateComponent extends React.Component{
 
 				):( this.props.gen_state==1 && (
 
-					<button
-					className="cd-btn-darken dash-btn">
-						<div className="btn-inner-div">
-							<span className="material-icons">
-								get_app
-							</span>
-							<span className="btn-label">
-							Download MIDI</span>
-						</div>	
-					</button>
+					<a href={'/download/'+this.props.download_address}>
+						<button
+						className="cd-btn-darken dash-btn">
+							<div className="btn-inner-div">
+								<span className="material-icons">
+									get_app
+								</span>
+								<span className="btn-label">
+								Download MIDI</span>
+							</div>	
+						</button>
+					</a>	
 
 				))}
 			</div>

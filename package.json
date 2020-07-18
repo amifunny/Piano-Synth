@@ -14,8 +14,6 @@
   "license": "ISC",
   "dependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-react-app": "^3.1.2",
-    "midi-writer-js": "^1.7.4",
-    "requirejs": "^2.3.6"
+    "babel-preset-react-app": "^3.1.2"
   }
 }

@@ -188,6 +188,7 @@ input[type=number]::-webkit-outer-spin-button {
     }
     100% {
         top: -100vh;
+        display: none;
     }
 }
 
@@ -203,7 +204,7 @@ input[type=number]::-webkit-outer-spin-button {
 /* ANIMATIONS */
 
 .x1 {
-	animation: animateBubble 10s linear infinite, sideWays 2s ease-in-out infinite alternate;
+	animation: animateBubble 5s linear , sideWays 2s ease-in-out infinite alternate;
 	
 	left: -5%;
 	top: 5%;

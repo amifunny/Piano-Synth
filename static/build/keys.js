@@ -17,21 +17,35 @@ var Ivory = function (_React$Component) {
 
 		var _this = _possibleConstructorReturn(this, (Ivory.__proto__ || Object.getPrototypeOf(Ivory)).call(this, props));
 
-		_this.myRef = React.createRef();
-
+		_this.keyparent = React.createRef();
 		_this.handleStroke = _this.handleStroke.bind(_this);
+		_this.removeBubbleTimeout = _this.removeBubbleTimeout.bind(_this);
+		_this.bubbleCount = 0;
 		return _this;
 	}
 
 	_createClass(Ivory, [{
 		key: "handleStroke",
 		value: function handleStroke(e) {
+
 			synth.triggerAttackRelease(this.props.key_label, '8n');
-			// const node = this.myRef.current;
-			var bub = document.createElement("div");
-			bub.classList.add("bubble");
-			bub.classList.add("x1");
-			this.myRef.current.appendChild(bub);
+
+			if (this.bubbleCount < 3) {
+				var bub = document.createElement("div");
+				bub.classList.add("bubble");
+				bub.classList.add("x1");
+				this.keyparent.current.appendChild(bub);
+				this.bubbleCount += 1;
+				setTimeout(this.removeBubbleTimeout, 5000);
+			}
+		}
+	}, {
+		key: "removeBubbleTimeout",
+		value: function removeBubbleTimeout() {
+			if (this.bubbleCount != 0) {
+				this.keyparent.current.removeChild(this.keyparent.current.childNodes[0]);
+				this.bubbleCount -= 1;
+			}
 		}
 	}, {
 		key: "render",
@@ -39,7 +53,8 @@ var Ivory = function (_React$Component) {
 
 			return React.createElement(
 				"div",
-				{ ref: this.myRef, className: "key-set-relative" },
+				{ className: "key-set-relative" },
+				React.createElement("div", { ref: this.keyparent }),
 				React.createElement(
 					"div",
 					{ id: this.props.key_label,

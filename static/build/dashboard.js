@@ -6,6 +6,10 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+function play_piano(notes) {
+	return;
+}
+
 var Dashboard = function (_React$Component) {
 	_inherits(Dashboard, _React$Component);
 
@@ -164,7 +168,12 @@ var GenerateButton = function (_React$Component3) {
 					recording: record_obj,
 					time_steps: this.state.time_steps
 				})
+			}).then(function (result) {
+				return result.json();
 			}).then(function (resp) {
+
+				play_piano(resp['pred_notes']);
+				_this4.download_address = resp['filename'];
 
 				_this4.setState({
 					sending: false,
@@ -266,7 +275,7 @@ var GenStateComponent = function (_React$Component4) {
 				null,
 				this.props.sending && React.createElement(
 					"div",
-					{ "class": "spinner" },
+					{ className: "spinner" },
 					React.createElement("div", null),
 					React.createElement("div", null),
 					React.createElement("div", null)
@@ -289,21 +298,25 @@ var GenStateComponent = function (_React$Component4) {
 						)
 					)
 				) : this.props.gen_state == 1 && React.createElement(
-					"button",
-					{
-						className: "cd-btn-darken dash-btn" },
+					"a",
+					{ href: '/download/' + this.props.download_address },
 					React.createElement(
-						"div",
-						{ className: "btn-inner-div" },
+						"button",
+						{
+							className: "cd-btn-darken dash-btn" },
 						React.createElement(
-							"span",
-							{ className: "material-icons" },
-							"get_app"
-						),
-						React.createElement(
-							"span",
-							{ className: "btn-label" },
-							"Download MIDI"
+							"div",
+							{ className: "btn-inner-div" },
+							React.createElement(
+								"span",
+								{ className: "material-icons" },
+								"get_app"
+							),
+							React.createElement(
+								"span",
+								{ className: "btn-label" },
+								"Download MIDI"
+							)
 						)
 					)
 				)
