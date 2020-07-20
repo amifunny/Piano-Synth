@@ -178,6 +178,10 @@ body{
   border: 0.4rem solid #ffcb6a;
 }
 
+a{
+  color: #ffcb6a;
+}
+
 /*Remove default increment and decrement buttons*/
 input[type="number"] {
   -webkit-appearance: textfield;
