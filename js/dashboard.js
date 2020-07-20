@@ -1,6 +1,53 @@
-function play_piano(notes){
-	return
-}
+function auto_play(key_given){ 
+
+	// Plays paino using given notes and chords,
+	// in list of lists format
+
+	var i = 0;
+	// Play keys after every half of a second
+	var keyPlayer = setInterval(keyStroke, 500);
+
+	//Stores keys pressed at previous timestep to remove
+	// its active css
+	var prev_key = []
+	function keyStroke() {
+
+		i = i+1;
+		if(key_given.length > i){
+
+			// Remove all previous active
+			if(prev_key.length!=0){
+				for (var j = 0; j < prev_key.length; j++) {
+					prev_key[j].classList.remove('piano-key-active')
+				}
+			}
+
+			prev_key = []
+
+			// Play all keys in chord or notes
+			for (var j = 0; j < key_given[i].length; j++) {
+
+				let key_div = document.getElementById( String(key_given[i][j]) )
+				key_div.classList.add('piano-key-active')
+				key_div.click();
+				prev_key.push( key_div )
+			}
+
+		}else{
+
+			// At end remove all previous pressed keys
+			for (var j = 0; j < prev_key.length; j++) {
+				prev_key[j].classList.remove('piano-key-active')
+			}
+			clearInterval(keyPlayer);
+
+		}
+
+	}  
+
+};
+
+
 
 class Dashboard extends React.Component{
 
@@ -12,6 +59,10 @@ class Dashboard extends React.Component{
 		return (
 			<div className="dashboard">
 				<UtilButtons />
+				<div className="maker-tag">
+					Made with ♥ By <a target="_blank" href="https://github.com/amifunny/"
+					>Amifunny</a>
+				</div>
 			</div>	
 
 		)
@@ -36,6 +87,9 @@ class UtilButtons extends React.Component{
 				is_recording : true
 			});	
 		}
+		// Empty the global object,
+		// when start new recording
+		record_obj = []
 		is_recording = true;
 	}
 
@@ -50,6 +104,8 @@ class UtilButtons extends React.Component{
 		return (
 			<div className="cd-h-div buttons-util flex-center">
 
+				{/*Show Record button default and if recording
+				show stop button */}
 				{this.state.is_recording?(
 					<button onClick={this.stopRecording}
 					className="cd-btn-darken dash-btn">
@@ -86,10 +142,18 @@ class GenerateButton extends React.Component{
 	constructor(props){
 		super(props)
 		this.state = {
+			// Store if music generation request is being made
+			// to show spinner
 			sending : false,
+			// Gen state could be 0,1 or -1
+			// 0 : no genration occured
+			// 1 : generated successfully
+			// -1 : Generation file
 			gen_state : 0,
-			time_steps : 150
+			// Number of chords or notes to generate
+			time_steps : 30
 		}
+		// Stores link to generated midi file
 		this.download_address = ""
 		this.generate = this.generate.bind(this);
 		this.sendRecording = this.sendRecording.bind(this)
@@ -99,6 +163,8 @@ class GenerateButton extends React.Component{
 
 	generate(){
 
+		// Show spinner by updating state and 
+		// send server request
 		if(!this.props.is_recording && record_obj.length!=0){
 			this.setState({
 				sending : true
@@ -110,7 +176,6 @@ class GenerateButton extends React.Component{
 
 
 	sendRecording(){
-		console.log(record_obj);
 
 		fetch('http://127.0.0.1:5000/generate',{
 			method:'POST',
@@ -128,9 +193,11 @@ class GenerateButton extends React.Component{
 	        (result) => result.json()
         ).then( resp => {
 
-				play_piano( resp['pred_notes'] )
+        		// auto play piano for predicted music
+				auto_play( resp['pred_notes'] )
 				this.download_address = resp['filename']
 
+				// Set 1 for success
 				this.setState({
 					sending:false,
 					gen_state : 1
@@ -139,7 +206,7 @@ class GenerateButton extends React.Component{
 			},
 
 			(error) => {
-
+				// Set -1 for error
 				this.setState({
 					sending:false,
 					gen_state:-1
@@ -150,10 +217,11 @@ class GenerateButton extends React.Component{
 	}
 
 	setTimeSteps(e){
-		let min_val = 150
-		let max_val = 5000
+		let min_val = 30
+		let max_val = 500
 
 		this.setState({
+			// Set `time_steps` to be between min and max value
 			time_steps : Math.max( Math.min(e.target.value,max_val) , min_val )
 		});
 	}
@@ -171,6 +239,7 @@ class GenerateButton extends React.Component{
 						</div>	
 				</button>	
 
+				{/* Input Element to set time_steps to predict */}
 				<div className="flex-center time-steps-div">
 					<div className="time-steps-label flex-center">
 						<span className="material-icons">
@@ -180,7 +249,7 @@ class GenerateButton extends React.Component{
 					</div>
 					<div>
 						<input value={this.state.time_steps}
-						onChange={this.setTimeSteps} min="150" max="5000"
+						onChange={this.setTimeSteps} min="32" max="500"
 						className="time-steps-input"
 						type="number">
 						</input>
@@ -205,6 +274,7 @@ class GenStateComponent extends React.Component{
 	render(){
 		return(
 			<div>
+			    {/* Show loading spinner when request is in progress */}
 				{ this.props.sending && (
 						<div className="spinner">
 							<div></div><div></div><div></div>

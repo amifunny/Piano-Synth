@@ -1,5 +1,6 @@
 import {Board} from './keyboard.js'
 
+// Wrapper conponent of Keyboard
 class Piano extends React.Component{
 
 	constructor(props){
@@ -15,7 +16,5 @@ class Piano extends React.Component{
 	}
 
 }
-
-
 
 export {Piano};

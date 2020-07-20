@@ -1,6 +1,7 @@
 import {Piano} from './piano.js'
 import {Dashboard} from './dashboard.js'
 
+// Main app component
 class App extends React.Component{
 
 	constructor(props){

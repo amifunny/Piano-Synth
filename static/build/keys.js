@@ -34,8 +34,14 @@ var Ivory = function (_React$Component) {
 				var bub = document.createElement("div");
 				bub.classList.add("bubble");
 				bub.classList.add("x1");
-				this.keyparent.current.appendChild(bub);
 				this.bubbleCount += 1;
+
+				// Dynamic additon of animation property and scale
+				// To give random bubble size and horizontal movement
+				bub.style.animation = "animateBubble " + String(Math.floor(Math.random() * 4) + 3) + "s linear ," + " sideWays" + String(Math.floor(Math.random() * 6) + 1) + " 2s ease-in-out infinite alternate";
+				bub.style.transform = "scale(" + String(Math.random() * (0.7 - 0.3) + 0.3) + ")";
+				this.keyparent.current.appendChild(bub);
+
 				setTimeout(this.removeBubbleTimeout, 5000);
 			}
 		}

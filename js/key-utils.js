@@ -1,3 +1,5 @@
+// Store KeyBoard keycodes corresponding
+// to octave key of piano
 var keymap = {
 	
 	'KeyQ':'C3',

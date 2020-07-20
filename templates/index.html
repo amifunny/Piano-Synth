@@ -22,53 +22,30 @@
       
     </div>
 
-    <script src="/static/lib/require.js"></script>
     <script type="module" src="/static/build/app.js"></script>
     <script src="/static/build/key-utils.js"></script>
     <script type="text/javascript">
       
-      
-      //window.addEventListener('load',function(){ 
-      //console.log("DOM loaded")
-       // var myVar = setInterval(myTimer, 500);
-       // var i = 0;
-       // let key_temp = ["C4","C4","D4","C4","G4","F4",
-       //              "C4","C4","C4","A4","F4","E4","D4",
-       //              "A#4","A#4","A4","F4","G4","F4","F4"]
-
-       //  function myTimer() {
-          
-       //    i = i+1;
-       //    if(key_temp.length > i){
-            
-       //      let key_div = document.getElementById(key_temp[i]);
-
-       //      if( !key_div.classList.contains('piano-key-active') ){
-       //        key_div.classList.add('piano-key-active');
-       //      }
-      // 
-      //       key_div.click();
-      //     }else{
-      //       clearInterval(myVar);
-      //     }
-
-      //   }  
-  
-      // });
-
+      //Global object to store notes and chord,
+      // when recording is on.
       var record_obj = []
+      // Store boolean if recording
       var is_recording = false
 
+      // Stores keys pressed together,
+      // to record chords
       var key_pressed = {}
       document.addEventListener('keydown',function(e) {
-          
-          // console.log(e)
-
+          // key_map has keys of computer corresponding 
+          // to piano keys
           if( e.code in keymap && e.repeat!=true ){
 
+            // Octave notes are id of div to press
             let keyid = keymap[e.code];
+            // Add to pressed list
             key_pressed[keyid] = 1
 
+            // Perform click on key_div and apply highlightinh css
             let key_div = document.getElementById(keyid);
 
             if( !key_div.classList.contains('piano-key-active') ){
@@ -88,18 +65,22 @@
         if( e.code in keymap){
           let keyid = keymap[e.code];
 
+          // When key is lifted, remove it from pressed list
           key_sequence[keyid] = 1
           delete key_pressed[keyid]
 
+          // When no keys are currently pressed,
+          // store previous keys in record object
           if( Object.keys(key_pressed).length === 0 ){
             all_seq = Object.keys(key_sequence)
             key_sequence = {}
-            console.log(all_seq)
+
             if( is_recording ){
               record_obj.push(all_seq)
             }
           }
 
+          // Remove active css
           let key_div = document.getElementById(keyid);
           if( key_div.classList.contains('piano-key-active') ){
               key_div.classList.remove('piano-key-active');
@@ -108,6 +89,9 @@
         }
 
       });
+
+
+
 
     </script>
 

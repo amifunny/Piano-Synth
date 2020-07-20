@@ -26,7 +26,6 @@ body{
 .keyboard{
 	height: var(--keyboard-h);
 	font-family: sans-serif;
-	/*position: relative;*/
 	text-align: center;
 }
 
@@ -40,16 +39,16 @@ body{
 .ivory-key{
 	background-color: var(--ivory-bg);
 	color: #f3b645;
-    font-weight: bold;
+  font-weight: bold;
 	height: var(--keyboard-h);
 	width: 100%;
 	box-shadow: 1px 1px 1px 1px white;
 
 	border: 1px solid black;
-    border-width: 0 5px 20px;
-    border-color: #d3d1d3;
-    border-bottom-color: #ecece7;
-    box-shadow: 0 3px 5px #ccc, inset 0px 0px 0px 1px rgba(220, 220, 220, 0.2);
+  border-width: 0 5px 20px;
+  border-color: #d3d1d3;
+  border-bottom-color: #ecece7;
+  box-shadow: 0 3px 5px #ccc, inset 0px 0px 0px 1px rgba(220, 220, 220, 0.2);
 
 }
 
@@ -79,12 +78,11 @@ body{
 	width: var(--ebony-w);
 
 	border: 5px solid black;
-    /* border-radius: 0 0 2px 2px; */
-    border-width: 0px 5px 10px;
-    border-color: #000;
-    border-bottom-color: #424546;
-    background: #211f1f;
-    box-shadow: 0 3px 5px #ccc, inset 0px 0px 0px 1px rgba(220, 220, 220, 0.2);
+  border-width: 0px 5px 10px;
+  border-color: #000;
+  border-bottom-color: #424546;
+  background: #211f1f;
+  box-shadow: 0 3px 5px #ccc, inset 0px 0px 0px 1px rgba(220, 220, 220, 0.2);
 
 }
 
@@ -143,9 +141,9 @@ body{
 .time-steps-div{
 	height: 3.5rem;
 	color: #ffcb6a;
-    background: black;
-    margin: 0 1rem;
-    border: 3px solid #ffcb6a;
+  background: black;
+  margin: 0 1rem;
+  border: 3px solid #ffcb6a;
 }
 
 .time-steps-div:focus{
@@ -164,11 +162,23 @@ body{
 }
 
 .time-steps-label{
-	padding: 0 1rem;
+  	padding: 0 1rem;
     font-family: sans-serif;
     font-size: 14px
 }
 
+.maker-tag{
+  padding: 20px 70px;
+  margin: 100px auto;
+  text-align: center;
+  background: black;
+  color: #ffcb6a;
+  font-family: sans-serif;
+  width: max-content;
+  border: 0.4rem solid #ffcb6a;
+}
+
+/*Remove default increment and decrement buttons*/
 input[type="number"] {
   -webkit-appearance: textfield;
      -moz-appearance: textfield;
@@ -192,46 +202,54 @@ input[type=number]::-webkit-outer-spin-button {
     }
 }
 
-@keyframes sideWays { 
-    0% { 
-        margin-left:0px;
-    }
-    100% { 
-        margin-left:150px;
-    }
+@keyframes sideWays1 { 
+    0% { margin-left:0px; }
+    100% { margin-left:150px; }
 }
-
+@keyframes sideWays2 { 
+    0% { margin-left:150px; }
+    100% { margin-left:0px; }
+}
+@keyframes sideWays3 { 
+    0% { margin-left:-75px; }
+    100% { margin-left:75; }
+}
+@keyframes sideWays4 { 
+    0% { margin-left:60px; }
+    100% { margin-left:-100px; }
+}
+@keyframes sideWays5 { 
+    0% { margin-left:50px; }
+    100% { margin-left:-100px; }
+}
+@keyframes sideWays6 { 
+    0% { margin-left:100px; }
+    100% { margin-left:-50px; }
+}
 /* ANIMATIONS */
 
-.x1 {
+.bubble-anim {
 	animation: animateBubble 5s linear , sideWays 2s ease-in-out infinite alternate;
-	
 	left: -5%;
 	top: 5%;
-	
-	transform: scale(0.6);
 }
 
 .bubble {
 	border-radius: 50%;
-	
-	box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2), inset 0px 10px 30px 5px rgba(255, 255, 255, 1);
-	
-    height: 200px;
-	position: absolute;
-	width: 200px;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2), inset 0px 10px 30px 20px rgb(255 218 149 / 95%);
+  height: 200px;
+  position: absolute;
+  width: 200px;
+  z-index: -5;
 }
 
 .bubble:after {
-    /*background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(255,255,255,0.5)), color-stop(70%,rgba(255,255,255,0)));  Chrome,Safari4+ */
-    /*background: -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.5) 0%,rgba(255,255,255,0) 70%); /* Chrome10+,Safari5.1+ */*/
-    background: radial-gradient(ellipse at center,  rgba(255,255,255,0.5) 0%,rgba(255,255,255,0) 70%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#80ffffff', endColorstr='#00ffffff',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+  background: radial-gradient(ellipse at center,  rgba(255,255,255,0.5) 0%,rgba(255,255,255,0) 70%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#80ffffff', endColorstr='#00ffffff',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 
 	border-radius: 50%;
 	
 	box-shadow: inset 0 20px 30px rgba(255, 255, 255, 0.3);
-	
 	content: "";
     height: 180px;
 	left: 10px;

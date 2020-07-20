@@ -35,10 +35,14 @@ def after_request(response):
 
 	return response
 
-
+# dictionary to convert int mapping
+# to notes or chords
 file = open("model/int_to_note",'rb')
 int_to_note = pickle.load(file)
 
+# dictionary to convert notes or chords mapping
+# to int
+# This mapping was used for training our model
 file = open("model/note_to_int",'rb')
 note_to_int = pickle.load(file)
 
@@ -48,20 +52,21 @@ music_model = tf.keras.models.load_model('model/music_model.h5',compile=False)
 def home():
 	return render_template('index.html')
 
-# TODO : normalForm of chord is not 
-# is incorrectly been converted
-
 def prepare_midi(sequence):
+
+	# Convert Notes and chords
+	# into midi stream and save as file
 
 	midi_notes = []
 	offset = 0
 	for ele in sequence:
 
+		# Chord are like '1.5.6' in normalOrder
 		if ('.' in ele) or ele.isdigit():
 			chord_notes = ele.split('.')
 			notes = []
 			for current_note in chord_notes:
-				
+				# Get each note of chord
 				new_note = note.Note( int(current_note) )
 				new_note.storedInstrument = instrument.Piano()
 				notes.append(new_note)
@@ -79,8 +84,10 @@ def prepare_midi(sequence):
 
 		offset += 1
 
+	# Convert to midi stream
 	midi_stream = stream.Stream( midi_notes )
 	
+	# Generate random filename
 	alphanum = string.ascii_letters+string.digits
 	file_name = ''.join( [ random.choice(alphanum) for i in range(15) ] )
 	file_name = file_name +'.mid'
@@ -91,10 +98,17 @@ def prepare_midi(sequence):
 
 def prepare_input(input_rec):
 
+	# Preprocess the input which is list of lists
+	# into notes and normalOrder chord
+	# and then convert them to their int mapping
+	# on which model is trained
+
 	processed_input = []
 
 	for step_element in input_rec:
 
+		# Notes are list of 1 length
+		# and chords of higher length
 		if len(step_element)!=1:
 
 			chord_notes = []
@@ -122,21 +136,27 @@ def predict_music(model_input,steps):
 	
 	music_step = len(model_input)
 
+	# convert to tensor to feed into model
 	init_tf = tf.expand_dims( tf.convert_to_tensor( model_input ) , 0 )
 	output_list = []
 
-	temperature=0.5
+	# More temperature means more
+	# surpurising outputs
+	temperature=1.0
 
 	for i in range( steps ):
 
+	  # Gives probability distribution of possible outputs
 	  pred_one = music_model(init_tf)
-	  # pred_hot = tf.squeeze( tf.argmax(pred_one,-1) )
-
+	  # Apply temperature to adjust distribution
 	  predictions = pred_one / temperature
+	  # Sample category of output
 	  pred_val = tf.random.categorical(predictions, num_samples=1)
 
 	  pred_val = (tf.squeeze(pred_val)).numpy()
 
+	  # Concat new prediction to input feed
+	  # for further predictions
 	  init_tf = tf.concat( [ init_tf[:,1:] , [[pred_val]] ] , axis=-1 )
 	  output_list.append(pred_val)
 
@@ -149,7 +169,10 @@ def predict_music(model_input,steps):
 	return note_output
 
 def convert_to_playable(string_notes):
-	
+
+	# Convert predicted notes and chord like
+	# ['C4','1.5.0'] into [['C4'],['C4','G4','F4']]
+		
 	play_notes = []
 	for ele in string_notes:
 
@@ -160,12 +183,39 @@ def convert_to_playable(string_notes):
 				
 				new_note = note.Note( int(current_note) )
 				new_note.storedInstrument = instrument.Piano()
-				notes.append( str(new_note.pitch) +'4')
 				
+				# as id of our piano only consist of shorp keys
+				# so predicted sharp keys are converted to flats
+				# So 'D-' becomes 'C#'
+				if "-" in str(new_note.pitch):
+					sharp_note = chr( ord(str(new_note.pitch)[0])-1 )
+					# special case to convert 'A-' into 'G#'
+					note_str = sharp_note.replace('@','G')
+					note_str = sharp_note +'#'
+				else:
+					note_str = str(new_note.pitch)
+
+				# As we have limited octave range
+				# we convert reange outside of [3,4,5]
+				# to key of range 4
+				if note_str[-1].isdigit()
+					if not (3<=int(note_str[-1])<=5):
+						note_str = note_str[:-1]	
+				else:
+					note_str = note_str+"4"
+
+				notes.append( note_str )	
+
 			play_notes.append(notes)
 			
 		else:
-			play_notes.append([ele])
+
+			note_str = ele
+
+			if ele[-1].isdigit():
+				note_str = note_str[:-1]	
+
+			play_notes.append([note_str+"4"])
 
 
 	return play_notes
@@ -177,18 +227,13 @@ def generate():
 	recording = json_receive['recording']
 	nof_time_steps = json_receive['time_steps']
 
-	print(recording)
-	print(nof_time_steps)
-
 	# `input_notes` : consist of notes like 'C4','G4' and chords 1.5.0
 	# `model_input` : notes and chords converted to ints using `note_to_int`
 	input_notes,model_input = prepare_input(recording)
-	print(input_notes)
-	print(model_input)
 
 	# `pred_notes` : notes like 'C4',G4 and chords like 4.1.0
 	pred_notes = predict_music( model_input , nof_time_steps )
-	print(pred_notes)
+
 	# convert chords and notes into list of list like 1.5.0 => ['C4','G4','A4']
 	# these will will be used to play piano
 	pred_playable = convert_to_playable(pred_notes)
@@ -196,24 +241,21 @@ def generate():
 
 	# Add input and predicted notes
 	final_notes = input_notes + pred_notes
-	print(final_notes)
 
 	# convert and save to midi and get filename of saved midi
 	midi_filename = prepare_midi(final_notes)
-	print(midi_filename)
 
 	response = {
 		'pred_notes' : pred_playable,
 		'filename' : midi_filename
 	}
 
-	print(response)
-
 	return response
 
 
 @app.route('/download/<filename>')
 def download_midi(filename):
+	# Return file form 'gen_music' folder
     return send_from_directory('gen_music', filename=filename, as_attachment=True)
 
 
